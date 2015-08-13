@@ -1,0 +1,28 @@
+﻿<ion-view title="{{tasks.Title}}">
+    <ion-content>
+        <ion-list>
+            <div class="item item-divider" ng-show="tasks.Group != null">
+                Nhóm: {{tasks.Group}}
+            </div>
+            <div class="item item-divider" ng-show="tasks.Member != null">
+                Nhân sự: {{tasks.Member}}
+            </div>
+            <div ng-show="tasks.Tasks.length == 0" class="card no-result">
+                <div class="item item-text-wrap">
+                    {{$root.getLocaleText('Common.NoResultMessage')}}
+                </div>
+            </div>        
+            <ion-item ng-repeat="task in tasks.Tasks" class="item-icon-right" ng-href="{{location.absUrl()}}/task/{{task.id}}">
+                <h2>{{task.name}}</h2>
+                <p>Tình trạng: {{task.status}}</p>
+                <p class="badge-line">Ngày hết hạn:
+                    <span class="badge" ng-class="{
+                    'badge-assertive' : task.days < 0 && task.statusCode != 'Verified',
+                    'badge-energized' : task.days < 7 && task.days >= 0 && task.statusCode != 'Verified',
+                    'badge-balanced' : task.days >= 7 || task.statusCode == 'Verified' }" > {{task.dueDate |date:$root.getLocaleText('DateFormat')}} </span>
+                </p>
+                <i class="icon ion-ios7-arrow-forward"></i>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

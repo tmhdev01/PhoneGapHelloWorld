@@ -1,0 +1,35 @@
+/* Empty. Add your own CSS if you like */
+.error .item {
+    color: #f00;
+}
+.no-result .item {
+    color: gray;
+    font-style: italic;
+    font-size: 14px;
+}
+.badge-line .badge {
+    display: inline;
+    position: inherit;
+}
+
+/* Accordion styles */
+.list .item.item-accordion {
+    line-height: 38px;
+    padding-top: 0;
+    padding-bottom: 0;
+    transition: 0.09s all linear;
+}
+.list .item.item-accordion.ng-hide {
+    line-height: 0px;
+}
+.list .item.item-accordion.ng-hide-add,
+.list .item.item-accordion.ng-hide-remove {
+    display: block !important;
+}
+.alert .text:first-letter {
+    text-transform: capitalize;
+}
+/* END Accordion styles */
+.card-item i {
+    margin-right: 3px;
+}

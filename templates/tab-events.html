@@ -1,0 +1,20 @@
+﻿<ion-view title="{{events.Title}}">
+    <ion-content>
+        <div ng-show="events.Events.length == 0" class="card no-result">
+            <div class="item item-text-wrap">
+                {{$root.getLocaleText('Common.NoResultMessage')}}
+            </div>
+        </div>
+        <ion-list>
+            <ion-item ng-repeat="event in events.Events" class="item-icon-right" ng-href="{{location.absUrl()}}/event/{{event.id}}">
+                <h2>{{event.name}}</h2>
+                <p class="badge-line">
+                    <span class="badge" ng-class="{ 
+                    'badge-energized' : event.days < 7,
+                    'badge-balanced' : event.days >= 7 }">{{event.time | date:$root.getLocaleText('DatetimeFormat')}}</span>
+                </p>
+                <i class="icon ion-ios7-arrow-forward"></i>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

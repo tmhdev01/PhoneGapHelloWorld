@@ -1,0 +1,18 @@
+﻿<ion-view title="Chi tiết sự kiện">
+    <ion-content has-header="true" padding="true" >
+        <div ng-if="event.error == false" >
+            <h3>{{event.name}}</h3>
+            <p class="badge-line">
+                    <span class="badge" ng-class="{
+                    'badge-energized' : event.days < 7,
+                    'badge-balanced' : event.days >= 7 }">{{event.eventOn | date:$root.getLocaleText('DatetimeFormat')}}</span>
+            </p>
+        <p><b>Loại sự kiện:</b> {{event.category}}</p>
+        <p ng-if="event.hasChairman == true"><b>Điều hành:</b> {{event.chairman}}</p>
+            <p ng-if="event.attendantHasValue == true" ><b>Người tham gia: </b>{{event.attendants}}</p>
+            <p ng-if="event.groupHasValue == true"><b>Nhóm tham gia: </b>{{event.Groups}}</p>
+            <p><b>Mô tả chi tiết: </b></p>
+            <p ng-bind-html="event.description"></p>
+        </div>
+    </ion-content>
+</ion-view>

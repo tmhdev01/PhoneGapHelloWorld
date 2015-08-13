@@ -1,0 +1,34 @@
+﻿<ion-view title="{{Title}}">
+    <ion-content>
+        <div ng-show="emptyResult == true" class="card no-result">
+            <div class="item item-text-wrap">
+                {{$root.getLocaleText('Common.NoResultMessage')}}
+            </div>
+        </div>
+        <ion-list>
+            <ion-item class="item-avatar item-icon-right"
+                      ng-href="{{location.absUrl()}}/{{alert.link}}"
+                      collection-repeat="alert in Alerts track by alert.Id"
+                      collection-item-width="'100%'"
+                      collection-item-height="145"
+                      style="width: 100%;height: 145px">
+                <img src="{{alert.avatar}}" />
+                <p><b>{{alert.user}}</b></p>
+                <p>{{alert.title}}</p>
+                <p><b>{{alert.target}}</b></p>
+                <p class="badge-line">
+                        <span class="badge" ng-class="{
+                                'badge-energized' : alert.days < 7,
+                            'badge-balanced' : alert.days >= 7 }">{{alert.time}}</span></p>
+                <i class="icon ion-ios7-arrow-forward"></i>
+            </ion-item>
+        </ion-list>
+        <ion-infinite-scroll
+                ng-if="moreDataCanBeLoaded"
+                icon="ion-loading-d"
+                on-infinite="loadMore()"
+                distance="1%"
+                >
+        </ion-infinite-scroll>
+    </ion-content>
+</ion-view>
