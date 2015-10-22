@@ -39,7 +39,7 @@
                         ng-href="{{location.absUrl()}}/group/{{group.Id}}">
                 <h2>{{group.Name}}</h2>
                 <p>Thành viên: {{group.Members|number}}</p>
-                <p class="badge-line">Đang thực hiện: <span class="badge badge-energized">{{group.TasksInProgress}}</span> - Quá hạn: <span class="badge badge-assertive">{{group.TasksOverdue}}</span></p>
+                <p class="badge-line">{{$root.getLocaleText('Task.OpeningStatus.Title')}}: <span class="badge badge-energized">{{group.TasksInProgress}}</span> - {{$root.getLocaleText('Task.OverdueStatus.Title')}}: <span class="badge badge-assertive">{{group.TasksOverdue}}</span></p>
                 <i class="icon ion-ios7-arrow-forward"></i>
             </ion-item>
         </ion-list>

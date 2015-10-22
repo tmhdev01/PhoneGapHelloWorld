@@ -53,7 +53,11 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
     });
 
 })
-.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $compileProvider) {
+
+    //Avoid detecting IMG src error throw
+    //Suggest by http://stackoverflow.com/questions/24246464/display-images-through-html-img-tag-with-angularjs-and-ionic
+    //$compileProvider.imgSrcSanitizationWhitelist(/^\s(https|file|blob|cdvfile):|data:image\//);
 
     // Ionic uses AngularUI Router which uses the concept of states
     // Learn more here: https://github.com/angular-ui/ui-router
@@ -227,7 +231,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
                 }
             })
     .state('tab.groups.members', {
-                    url: '/members/:groupId',
+        url: '/members/:groupId',
         views: {
             'tab-groups@tab': {
                 templateUrl: 'templates/group-members.html',
@@ -236,7 +240,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
         }
     })
     .state('tab.groups.members.detail', {
-                        url: '/member/:memberId',
+        url: '/member/:memberId',
         views: {
             'tab-groups@tab': {
                 templateUrl: 'templates/group-member.html',
@@ -263,7 +267,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
                                 }
                             })
     .state('tab.groups.tasks', {
-                    url: '/tasks/:groupId/:type',
+        url: '/tasks/:groupId/:type',
         views: {
             'tab-groups@tab': {
                 templateUrl: 'templates/tab-tasks.html',
@@ -357,7 +361,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
 
 .provider('appConfig', function () {
     var configs = {
-        apiUrl: 'http://api.local.tasks/',
+        apiUrl: 'http://api.intranet.tasks/',
         isInternetRemoteService: false,
         avatarPath: '/img/avatars/',
         greetingMessage: 'Welcome to DynaTask mobile version 1.0',
@@ -397,10 +401,13 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
                 'Task.SearchBy.Created': 'Công việc (đang chờ xác nhận thực hiện)',
                 'Task.SearchBy.Accepted': 'Công việc (đang thực hiện)',
                 'Task.SearchBy.Implemented': 'Công việc (đang chờ xác nhận hoàn thành)',
-                'Task.SearchBy.Overdue': 'Công việc (quá hạn và chưa hoàn thành)',
+                'Task.SearchBy.Overdue': 'Công việc (đang mở và quá hạn)',
                 'Task.SearchBy.Verified7': 'Công việc (hoàn thành trong 7 ngày qua)',
                 'Task.SearchBy.Verified30': 'Công việc (hoàn thành trong 30 ngày qua)',
-                'Task.SearchBy.Default': 'Công việc'
+                'Task.SearchBy.Goingdue': 'Công việc (đang mở và gần đến hạn)',
+                'Task.SearchBy.Default': 'Công việc',
+                'Task.OpeningStatus.Title': 'Đang mở',
+                'Task.OverdueStatus.Title': 'Quá hạn'
             },
             'en-US': {
                 'Login.HeaderText': 'Login',
@@ -423,8 +430,11 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'starter
                 'Task.SearchBy.Overdue': 'Tasks (over due)',
                 'Task.SearchBy.Verified7': 'Tasks (Done from 7 days recently)',
                 'Task.SearchBy.Verified30': 'Tasks (Done from 30 days recently)',
-                'Task.SearchBy.Default': 'Tasks'
-        }
+                'Task.SearchBy.Goingdue': 'Tasks (on-going duedate)',
+                'Task.SearchBy.Default': 'Tasks',
+                'Task.OpeningStatus.Title': 'Opening',
+                'Task.OverdueStatus.Title': 'Overdue'
+            }
         },
         serviceStatusText: {
             title: 'Lỗi truy cập dịch vụ',

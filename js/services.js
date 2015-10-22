@@ -4,15 +4,7 @@
     return {
         all: function () {
             var summaryData = {
-                Tasks: [
-                    { type: 'Proposed', title: 'Đang chờ duyệt', total: 0, css: 'energized' },
-                    { type: 'Created', title: 'Đang chờ xác nhận thực hiện', total: 0, css: 'energized' },
-                    { type: 'Accepted', title: 'Đang thực hiện', total: 0, css: 'energized' },
-                    { type: 'Implemented', title: 'Đang chờ xác nhận hoàn thành', total: 0, css: 'energized' },
-                    { type: 'Overdue', title: 'Quá hạn và chưa hoàn thành', total: 0, css: 'assertive' },
-                    { type: 'Verified7', title: 'Hoàn thành trong 7 ngày qua', total: 0, css: 'balanced' },
-                    { type: 'Verified30', title: 'Hoàn thành trong 30 ngày qua', total: 0, css: 'balanced' }
-                ],
+                Tasks: appUtils.TasksListSummary,
                 Events: [
                     { days: 7, title: 'Trong 7 ngày', total: 0, css: 'energized' },
                     { days: 30, title: 'Trong 30 ngày', total: 0, css: 'balanced' }
@@ -34,8 +26,9 @@
                     summaryData.Tasks[2].total = taskReport.InProgress;
                     summaryData.Tasks[3].total = taskReport.Implemented;
                     summaryData.Tasks[4].total = taskReport.OpenOverdue;
-                    summaryData.Tasks[5].total = taskReport.VerifiedIn7Day;
-                    summaryData.Tasks[6].total = taskReport.VerifiedIn30Day;
+                    summaryData.Tasks[5].total = taskReport.OpenAsWarning;
+                    summaryData.Tasks[6].total = taskReport.VerifiedIn7Day;
+                    summaryData.Tasks[7].total = taskReport.VerifiedIn30Day;
                     summaryData.Events[0].total = eventReport.In7Day;
                     summaryData.Events[1].total = eventReport.In30Day;
                     summaryData.Alerts[0].total = notificationReport.In7Day;
@@ -61,53 +54,30 @@
 
 .factory('GroupService', function ($rootScope, cacheService, $ionicLoading, $http, appUtils) {
 
-    function buildGroupModel(actionResult) {
-        var results = [];
-        for (var idx in actionResult) {
-            var item = actionResult[idx];
-            results.push({
-                id: item.Id,
-                name: item.Name,
-                Members: item.MemberCount,
-                TasksInProgress: item.Task.InProgress,
-                TasksOverdue: item.Task.OpenOverdue,
-                Tasks: [
-                    { type: 'Proposed', title: 'Đang chờ duyệt', total: item.Task.Proposed, css: 'energized', hasValue: item.Task.Proposed == 0 ? false : true },
-                    { type: 'Created', title: 'Đang chờ xác nhận thực hiện', total: item.Task.Created, css: 'energized', hasValue: item.Task.Created == 0 ? false : true },
-                    { type: 'Accepted', title: 'Đang thực hiện', total: item.Task.InProgress, css: 'energized', hasValue: item.Task.InProgress == 0 ? false : true },
-                    { type: 'Implemented', title: 'Đang chờ xác nhận hoàn thành', total: item.Task.Implemented, css: 'energized', hasValue: item.Task.Implemented == 0 ? false : true },
-                    { type: 'Overdue', title: 'Quá hạn và chưa hoàn thành', total: item.Task.OpenOverdue, css: 'assertive', hasValue: item.Task.OpenOverdue == 0 ? false : true },
-                    { type: 'Verified7', title: 'Hoàn thành trong 7 ngày qua', total: item.Task.VerifiedIn7Day, css: 'balanced', hasValue: item.Task.VerifiedIn7Day == 0 ? false : true },
-                    { type: 'Verified30', title: 'Hoàn thành trong 30 ngày qua', total: item.Task.VerifiedIn30Day, css: 'balanced', hasValue: item.Task.VerifiedIn30Day == 0 ? false : true }
-                ]
-            });
-        }
-        return results;
-    }
-
     return {
         all: function () {
             var currentGroups = [];
             appUtils.callGetRemoteMethod('api/v1/getusergroups?tokenKey= ' + $rootScope.accessToken, {},
                 function (actionResult) {
                     for (var idx in actionResult) {
-                        var item = actionResult[idx];
-                        currentGroups.push({
-                            id: item.Id,
-                            name: item.Name,
-                            Members: item.MemberCount,
-                            TasksInProgress: item.Task.InProgress,
-                            TasksOverdue: item.Task.OpenOverdue,
-                            Tasks: [
-                                { type: 'Proposed', title: 'Đang chờ duyệt', total: item.Task.Proposed, css: 'energized', hasValue: item.Task.Proposed == 0 ? false : true },
-                                { type: 'Created', title: 'Đang chờ xác nhận thực hiện', total: item.Task.Created, css: 'energized', hasValue: item.Task.Created == 0 ? false : true },
-                                { type: 'Accepted', title: 'Đang thực hiện', total: item.Task.InProgress, css: 'energized', hasValue: item.Task.InProgress == 0 ? false : true },
-                                { type: 'Implemented', title: 'Đang chờ xác nhận hoàn thành', total: item.Task.Implemented, css: 'energized', hasValue: item.Task.Implemented == 0 ? false : true },
-                                { type: 'Overdue', title: 'Quá hạn và chưa hoàn thành', total: item.Task.OpenOverdue, css: 'assertive', hasValue: item.Task.OpenOverdue == 0 ? false : true },
-                                { type: 'Verified7', title: 'Hoàn thành trong 7 ngày qua', total: item.Task.VerifiedIn7Day, css: 'balanced', hasValue: item.Task.VerifiedIn7Day == 0 ? false : true },
-                                { type: 'Verified30', title: 'Hoàn thành trong 30 ngày qua', total: item.Task.VerifiedIn30Day, css: 'balanced', hasValue: item.Task.VerifiedIn30Day == 0 ? false : true }
-                            ]
-                        });
+                        var item = actionResult[idx],
+                            groupItem = {
+                                id: item.Id,
+                                name: item.Name,
+                                Members: item.MemberCount,
+                                TasksInProgress: item.Task.InProgress,
+                                TasksOverdue: item.Task.OpenOverdue,
+                                Tasks: [
+                                    { type: 'Proposed', title: 'Đang chờ duyệt', total: item.Task.Proposed, css: 'energized', hasValue: item.Task.Proposed == 0 ? false : true },
+                                    { type: 'Created', title: 'Đang chờ xác nhận thực hiện', total: item.Task.Created, css: 'energized', hasValue: item.Task.Created == 0 ? false : true },
+                                    { type: 'Accepted', title: 'Đang thực hiện', total: item.Task.InProgress, css: 'energized', hasValue: item.Task.InProgress == 0 ? false : true },
+                                    { type: 'Implemented', title: 'Đang chờ xác nhận hoàn thành', total: item.Task.Implemented, css: 'energized', hasValue: item.Task.Implemented == 0 ? false : true },
+                                    { type: 'Overdue', title: 'Quá hạn và chưa hoàn thành', total: item.Task.OpenOverdue, css: 'assertive', hasValue: item.Task.OpenOverdue == 0 ? false : true },
+                                    { type: 'Verified7', title: 'Hoàn thành trong 7 ngày qua', total: item.Task.VerifiedIn7Day, css: 'balanced', hasValue: item.Task.VerifiedIn7Day == 0 ? false : true },
+                                    { type: 'Verified30', title: 'Hoàn thành trong 30 ngày qua', total: item.Task.VerifiedIn30Day, css: 'balanced', hasValue: item.Task.VerifiedIn30Day == 0 ? false : true }
+                                ]
+                            };
+                        currentGroups.push(groupItem);
                     }
                 },
                 function () {
@@ -121,23 +91,24 @@
                 { userGroupId: groupId },
                 function (actionResult) {
                     for (var idx in actionResult) {
-                        var item = actionResult[idx];
-                        currentGroups.push({
-                            id: item.Id,
-                            name: item.Name,
-                            Members: item.MemberCount,
-                            TasksInProgress: item.Task.InProgress,
-                            TasksOverdue: item.Task.OpenOverdue,
-                            Tasks: [
-                                { type: 'Proposed', title: 'Đang chờ duyệt', total: item.Task.Proposed, css: 'energized', hasValue: item.Task.Proposed == 0 ? false : true },
-                                { type: 'Created', title: 'Đang chờ xác nhận thực hiện', total: item.Task.Created, css: 'energized', hasValue: item.Task.Created == 0 ? false : true },
-                                { type: 'Accepted', title: 'Đang thực hiện', total: item.Task.InProgress, css: 'energized', hasValue: item.Task.InProgress == 0 ? false : true },
-                                { type: 'Implemented', title: 'Đang chờ xác nhận hoàn thành', total: item.Task.Implemented, css: 'energized', hasValue: item.Task.Implemented == 0 ? false : true },
-                                { type: 'Overdue', title: 'Quá hạn và chưa hoàn thành', total: item.Task.OpenOverdue, css: 'assertive', hasValue: item.Task.OpenOverdue == 0 ? false : true },
-                                { type: 'Verified7', title: 'Hoàn thành trong 7 ngày qua', total: item.Task.VerifiedIn7Day, css: 'balanced', hasValue: item.Task.VerifiedIn7Day == 0 ? false : true },
-                                { type: 'Verified30', title: 'Hoàn thành trong 30 ngày qua', total: item.Task.VerifiedIn30Day, css: 'balanced', hasValue: item.Task.VerifiedIn30Day == 0 ? false : true }
-                            ]
-                        });
+                        var item = actionResult[idx],
+                            groupItem = {
+                                id: item.Id,
+                                name: item.Name,
+                                Members: item.MemberCount,
+                                TasksInProgress: item.Task.InProgress,
+                                TasksOverdue: item.Task.OpenOverdue,
+                                Tasks: appUtils.TasksListSummary
+                            };
+                        groupItem.Tasks[0].total = item.Task.Proposed;
+                        groupItem.Tasks[1].total = item.Task.Created;
+                        groupItem.Tasks[2].total = item.Task.InProgress;
+                        groupItem.Tasks[3].total = item.Task.Implemented;
+                        groupItem.Tasks[4].total = item.Task.OpenOverdue;
+                        groupItem.Tasks[5].total = item.Task.OpenAsWarning;
+                        groupItem.Tasks[6].total = item.Task.VerifiedIn7Day;
+                        groupItem.Tasks[7].total = item.Task.VerifiedIn30Day;
+                        currentGroups.push(groupItem);
                     }
                 },
                 function () {
@@ -180,14 +151,16 @@
                     members.avatar = actionResult.AvatarUrl;
                     members.id = actionResult.UserId;
                     members.groupId = actionResult.UserGroupId;
-                    members.Tasks = [
-                        { type: 'Created', title: 'Đang chờ xác nhận thực hiện', total: actionResult.Created, css: 'energized', hasValue: actionResult.Created == 0 ? false : true },
-                        { type: 'Accepted', title: 'Đang thực hiện', total: actionResult.InProgress, css: 'energized', hasValue: actionResult.InProgress == 0 ? false : true },
-                        { type: 'Implemented', title: 'Đang chờ xác nhận hoàn thành', total: actionResult.Implemented, css: 'energized', hasValue: actionResult.Implemented == 0 ? false : true },
-                        { type: 'Overdue', title: 'Quá hạn và chưa hoàn thành', total: actionResult.OpenOverdue, css: 'assertive', hasValue: actionResult.OpenOverdue == 0 ? false : true },
-                        { type: 'Verified7', title: 'Hoàn thành trong 7 ngày qua', total: actionResult.Verified7, css: 'balanced', hasValue: actionResult.Verified7 == 0 ? false : true },
-                        { type: 'Verified30', title: 'Hoàn thành trong 30 ngày qua', total: actionResult.Verified30, css: 'balanced', hasValue: actionResult.Verified30 == 0 ? false : true }
-                    ];
+                    members.Tasks = appUtils.TasksListSummary;
+
+                    members.Tasks[0].total = actionResult.Proposed;
+                    members.Tasks[1].total = actionResult.Created;
+                    members.Tasks[2].total = actionResult.InProgress;
+                    members.Tasks[3].total = actionResult.Implemented;
+                    members.Tasks[4].total = actionResult.OpenOverdue;
+                    members.Tasks[5].total = actionResult.OpenAsWarning;
+                    members.Tasks[6].total = actionResult.Verified7;
+                    members.Tasks[7].total = actionResult.Verified30;
                 },
                 function () {
                     members.error = true;
@@ -202,10 +175,10 @@
         all: function (type, groupId, memberId) {
             var data = {},
                 taskActor = -1;
-                if(memberId != 0 && memberId != undefined){
-                    taskActor=memberId;
-                }
-                predefinedCriteriaByType = {
+            if (memberId != 0 && memberId != undefined) {
+                taskActor = memberId;
+            }
+            predefinedCriteriaByType = {
                 "Proposed": {
                     Title: $rootScope.getLocaleText('Task.SearchBy.Proposed'),
                     Criteria: {
@@ -240,7 +213,7 @@
                     Title: $rootScope.getLocaleText('Task.SearchBy.Overdue'),
                     Criteria: {
                         StatusFilter: 4,
-                        AssignedTo: taskActor
+                        AssignedTo: taskActor == -1 ? 0 : taskActor
                     }
                 },
                 "Verified7": {
@@ -257,6 +230,13 @@
                         day: 30
                     }
                 },
+                "Goingdue": {
+                    Title: $rootScope.getLocaleText('Task.SearchBy.Goingdue'),
+                    Criteria: {
+                        StatusFilter: 2,
+                        GoingDueRequest: true
+                    }
+                },
                 "default": {
                     Title: $rootScope.getLocaleText('Task.SearchBy.Default'),
                     Criteria: {
@@ -264,7 +244,7 @@
                     }
                 }
             },
-            requestParam = predefinedCriteriaByType[type];
+        requestParam = predefinedCriteriaByType[type];
             if (typeof (requestParam) === 'undefined')
                 requestParam = predefinedCriteriaByType["default"];
 
@@ -622,7 +602,17 @@
                     }
                 }
                 return parts.join("&");
-            }
+            },
+            TasksListSummary: [
+                { type: 'Proposed', title: 'Đang chờ duyệt', total: 0, css: 'energized' },
+                { type: 'Created', title: 'Đang chờ xác nhận thực hiện', total: 0, css: 'energized' },
+                { type: 'Accepted', title: 'Đang thực hiện', total: 0, css: 'energized' },
+                { type: 'Implemented', title: 'Đang chờ xác nhận hoàn thành', total: 0, css: 'energized' },
+                { type: 'Overdue', title: 'Quá hạn (đang mở)', total: 0, css: 'assertive' },
+                { type: 'Goingdue', title: 'Gần đến hạn (đang mở)', total: 0, css: 'energized' },
+                { type: 'Verified7', title: 'Hoàn thành trong 7 ngày qua', total: 0, css: 'balanced' },
+                { type: 'Verified30', title: 'Hoàn thành trong 30 ngày qua', total: 0, css: 'balanced' }
+            ]
         }
     })
     .factory("gcmService", function (appConfig, $ionicPlatform,

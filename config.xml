@@ -1,12 +1,39 @@
-<?xml version='1.0' encoding='utf-8'?>
-<widget id="com.example.hello" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>DynaTask</name>
-    <description>
-        Task management tool.
-    </description>
-    <author email="hoatran@dyna.vn" href="http://dynatechs.vn">
-        Dynatechs
-    </author>
-    <content src="index.html" />
-    <access origin="*" />
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<widget id="dyna.vn.dynatask.mobileApp" version="0.0.1" android-versionCode="2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>DynaTask</name>
+  <description>
+    Task management system from Dynatechs.
+  </description>
+  <author email="support@dyna.vn" href="http://dynatechs.vn/">
+    DynaTask Mobile Application
+  </author>
+  <content src="index.html"/>
+  <access origin="*"/>
+  <preference name="webviewbounce" value="false"/>
+  <preference name="UIWebViewBounce" value="false"/>
+  <preference name="DisallowOverscroll" value="true"/>
+  <preference name="BackupWebStorage" value="none"/>
+  <preference name="LoadingDialog" value="DynaTask, Đang tải, xin vui lòng đợi trong giây lát..."/>
+  <feature name="StatusBar">
+    <param name="ios-package" value="CDVStatusBar" onload="true"/>
+  </feature>
+  <feature name="PushPlugin">
+    <param name="android-package" value="com.plugin.gcm.PushPlugin" />
+  </feature>
+  <plugin name="PushPlugin" value="com.plugin.gcm.PushPlugin" />
+  <platform name="android">
+    <icon src="icons/android/icon20.png" width="20" height="20" />
+    <icon src="icons/android/icon20@2x.png" width="40" height="40" />
+
+    <icon src="icons/android/icon30.png" width="30" height="30" />
+    <icon src="icons/android/icon30@2x.png" width="30" height="30" />
+
+    <icon src="icons/android/icon48.png" width="48" height="48" />
+    <icon src="icons/android/icon48@2x.png" width="156" height="156" />
+    
+    <icon src="icons/android/icon64.png" width="64" height="64" />
+    <icon src="icons/android/icon96.png" width="96" height="96" />
+    <icon src="icons/android/icon128.png" width="128" height="128" />
+    <icon src="icons/android/icon256.png" width="256" height="256" />
+  </platform>
 </widget>

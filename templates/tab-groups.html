@@ -14,7 +14,7 @@
                   <h2>Thành viên</h2>
                   <span class="badge badge-balanced">{{group.Members|number}}</span>
               </ion-item>
-              <div ng-repeat="task in group.Tasks" ng-show="{{task.hasValue}}">
+              <div ng-repeat="task in group.Tasks" ng-show="{{task.total > 0}}">
                   <ion-item ng-href="{{location.absUrl()}}/tasks/{{group.id}}/{{task.type}}">
                       <h2>{{task.title}}</h2>
                       <span class="badge badge-{{task.css}}">{{task.total}}</span>
